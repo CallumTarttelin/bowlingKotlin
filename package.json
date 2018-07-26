@@ -1,0 +1,51 @@
+{
+  "name": "bowling",
+  "version": "1.0.0",
+  "description": "Bowling League Management",
+  "dependencies": {
+    "@material-ui/core": "^1.4.1",
+    "@material-ui/icons": "^2.0.0",
+    "axios": "^0.18.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-router-dom": "^4.3.1",
+    "simpl-schema": "^1.5.3",
+    "uniforms": "^1.25.0",
+    "uniforms-material": "^1.25.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^1.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-loader": "^2.1.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.10.0",
+    "mini-css-extract-plugin": "^0.4.1",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.16.2",
+    "webpack-command": "^0.4.1"
+  },
+  "scripts": {
+    "watch": "webpack --watch -d",
+    "nightwatch": "./node_modules/.bin/nightwatch",
+    "nightwatch-setup": "selenium-standalone install --version=3.9.1 --drivers.chrome.version=2.36 --drivers.gecko.version=0.19.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saskcow/bowling.git"
+  },
+  "author": "Callum Tarttelin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saskcow/bowling/issues"
+  },
+  "homepage": "https://github.com/saskcow/bowling#readme"
+}

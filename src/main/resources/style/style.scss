@@ -1,0 +1,80 @@
+/*.add, .addTeam {
+    position: absolute;
+    bottom: -5px;
+    right: -10px;
+}*/
+
+.Leagues, .Loading{
+  position: absolute;
+  left:50%
+}
+
+.App-header {
+  background-color: #222;
+  height: 75px;
+  padding: 20px;
+  color: white;
+}
+
+.Game .App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 3em;
+  width: 80%;
+  display: inline-block;
+}
+
+.App-title-game {
+  font-size: 1.5em;
+  width: 80%;
+  display: inline-block;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.invis {
+  border: 0;
+}
+
+.Stats {
+  table-layout: fixed;
+}
+
+.back {
+  float: right;
+}
+
+.leagueSummary:visited {
+  color: #F00;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+table, tr {
+  width: 100%;
+}
+
+th {
+  text-align: left;
+}
+
+table[class~=winner] th {
+  background: limegreen;
+}
+
+table[class~=loser] th {
+  background-color: red;
+}
