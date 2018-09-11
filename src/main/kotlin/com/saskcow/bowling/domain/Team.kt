@@ -15,14 +15,18 @@ data class Team (
     @ManyToOne
     val league: League? = null,
     @OneToMany(mappedBy = "team", cascade = [(CascadeType.ALL)])
-    val players: MutableList<Player> = mutableListOf()
+    val players: MutableList<Player> = mutableListOf(),
+    @OneToMany(mappedBy = "team", cascade = [CascadeType.ALL])
+    val games: MutableList<TeamGame> = mutableListOf()
 ) {
-    init {
+    fun init(): Team {
         league?.addTeam(this)
+        return this
     }
 
     fun unlink() {
         this.league?.removeTeam(this)
+        this.games.forEach { it.game?.removeGame(it) }
     }
 
     fun addPlayer(player: Player) {
@@ -31,5 +35,13 @@ data class Team (
 
     fun removePlayer(player: Player) {
         players.remove(player)
+    }
+
+    fun addGame(game: TeamGame) {
+        games.add(game)
+    }
+
+    fun removeGame(game: TeamGame) {
+        games.remove(game)
     }
 }

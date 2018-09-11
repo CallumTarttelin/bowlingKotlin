@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.saskcow.bowling.domain.League
 import com.saskcow.bowling.domain.Team
 import com.saskcow.bowling.repository.LeagueRepository
+import com.saskcow.bowling.repository.TeamRepository
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.Before
@@ -33,11 +34,13 @@ class LeagueControllerTest {
 
     @Mock
     private val repo: LeagueRepository? = null
+    @Mock
+    private val teamRepository: TeamRepository? = null
     private var mockMvc: MockMvc? = null
 
     @Before
     fun setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(LeagueController(repo!!)).build()
+        mockMvc = MockMvcBuilders.standaloneSetup(LeagueController(repo!!, teamRepository!!)).build()
     }
 
     @Test

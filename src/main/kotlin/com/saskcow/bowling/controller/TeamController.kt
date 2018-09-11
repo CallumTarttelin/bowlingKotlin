@@ -6,23 +6,33 @@ import com.saskcow.bowling.repository.TeamRepository
 import com.saskcow.bowling.rest.TeamRest
 import com.saskcow.bowling.view.TeamView
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
 
-@Controller
+@RestController
 class TeamController(private val repo: TeamRepository, private val leagueRepository: LeagueRepository) {
 
     @GetMapping("/api/team/{id}")
     fun findById(@PathVariable("id") id: Long): ResponseEntity<TeamView> {
         val optionalTeam = repo.findById(id)
         return if (! optionalTeam.isPresent) ResponseEntity.notFound().build()
-        else ResponseEntity.ok(TeamView(optionalTeam.get()))
+        else ResponseEntity.ok(
+            TeamView(
+                optionalTeam.get(),
+                repo.pinsFor(id),
+                repo.pinsAgainst(id),
+                repo.highHandicapGame(id),
+                repo.highHandicapSeries(id),
+                repo.teamPoints(id),
+                repo.playerPoints(id)
+            )
+        )
     }
 
     @PostMapping("/api/team")
@@ -34,6 +44,7 @@ class TeamController(private val repo: TeamRepository, private val leagueReposit
         val league = optionalLeague.get()
 
         val team = repo.save(Team(name = name, league = league))
+
         val location = ServletUriComponentsBuilder
             .fromCurrentRequest().path("/{id}")
             .buildAndExpand(team.id).toUri()

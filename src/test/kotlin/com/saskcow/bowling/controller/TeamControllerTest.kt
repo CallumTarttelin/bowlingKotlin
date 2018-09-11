@@ -19,10 +19,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import java.util.Optional
@@ -61,9 +62,19 @@ class TeamControllerTest {
     }
 
     @Test
+    fun `Adding a team with no name returns 400`() {
+        mockMvc!!.perform(
+            post("/api/team")
+                .content("""{"leagueId": 1}""")
+                .contentType("application/json")
+        )
+            .andExpect(status().isBadRequest)
+    }
+
+    @Test
     fun `Adding a valid team adds a team and returns location`() {
         val league = League(1L, "City Watch")
-        val team = Team(2L, "The Night Watch", league)
+        val team = Team(2L, "The Night Watch", league).init()
 
         whenever(leagueRepository!!.findById(1L)).thenReturn(Optional.of(league))
         whenever(repo!!.save(isA<Team>())).thenReturn(team)
@@ -72,7 +83,7 @@ class TeamControllerTest {
             .content("""{"name": "City Watch", "leagueId": 1}""")
             .contentType("application/json"))
             .andExpect(status().isCreated)
-            .andExpect(MockMvcResultMatchers.header().string("Location", "$baseUrl/api/team/${team.id}"))
+            .andExpect(header().string("Location", "$baseUrl/api/team/${team.id}"))
     }
 
     @Test
@@ -84,45 +95,45 @@ class TeamControllerTest {
 
     @Test
     fun `Can retrieve a team by ID`() {
-        val team = Team(1L, "The Night Watch", League(2L, "City Watch"))
+        val team = Team(1L, "The Night Watch", League(2L, "City Watch")).init()
 
         whenever(repo!!.findById(1L)).thenReturn(Optional.of(team))
         mockMvc!!.perform(get("/api/team/1"))
             .andExpect(status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("name", equalTo("The Night Watch")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.league.name", equalTo("City Watch")))
+            .andExpect(jsonPath("name", equalTo("The Night Watch")))
+            .andExpect(jsonPath("$.league.name", equalTo("City Watch")))
     }
 
     @Test
     fun `Can retrieve a team with players`() {
-        val team = Team(1L, "The Night Watch", League(2L, "City Watch"))
+        val team = Team(1L, "The Night Watch", League(2L, "City Watch")).init()
         Player(2L, "Sam Vimes", team)
 
         whenever(repo!!.findById(1L)).thenReturn(Optional.of(team))
 
         mockMvc!!.perform(get("/api/team/1"))
             .andExpect(status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("name", equalTo("The Night Watch")))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.league.name", equalTo("City Watch")))
+            .andExpect(jsonPath("name", equalTo("The Night Watch")))
+            .andExpect(jsonPath("$.league.name", equalTo("City Watch")))
     }
 
     @Test
     fun `Attempts to delete nonexistent team returns 404`() {
-        mockMvc!!.perform(MockMvcRequestBuilders.delete("/api/team/1"))
+        mockMvc!!.perform(delete("/api/team/1"))
             .andExpect(status().isNotFound)
     }
 
     @Test
     fun `Can delete a team from ID`() {
         val league = League(2L, "City Watch")
-        val team = Team(1L, "The Night Watch", league)
+        val team = Team(1L, "The Night Watch", league).init()
 
         league.teams shouldContain team
 
         whenever(repo!!.findById(1L)).thenReturn(Optional.of(team))
         doNothing().whenever(repo).deleteById(1L)
 
-        mockMvc!!.perform(MockMvcRequestBuilders.delete("/api/team/1"))
+        mockMvc!!.perform(delete("/api/team/1"))
             .andExpect(status().isNoContent)
 
         verify(repo, times(1)).deleteById(1L)

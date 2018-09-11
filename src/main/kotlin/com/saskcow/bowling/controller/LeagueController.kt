@@ -2,8 +2,11 @@ package com.saskcow.bowling.controller
 
 import com.saskcow.bowling.domain.League
 import com.saskcow.bowling.repository.LeagueRepository
+import com.saskcow.bowling.repository.TeamRepository
+import com.saskcow.bowling.rest.LeagueRest
 import com.saskcow.bowling.view.LeagueView
 import com.saskcow.bowling.view.LeagueViewSummary
+import com.saskcow.bowling.view.TeamViewSummaryLeague
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -17,7 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.net.URI
 
 @Controller
-class LeagueController(private val repo: LeagueRepository) {
+class LeagueController(private val repo: LeagueRepository, private val teamRepository: TeamRepository) {
 
     @GetMapping("/api/league")
     fun findAll(): ResponseEntity<List<LeagueViewSummary>> =
@@ -35,12 +38,25 @@ class LeagueController(private val repo: LeagueRepository) {
     fun findById(@PathVariable("id") id: Long): ResponseEntity<LeagueView> {
         val optionalLeague = repo.findById(id)
         return if (! optionalLeague.isPresent) ResponseEntity.notFound().build()
-        else ResponseEntity.ok(LeagueView(optionalLeague.get()))
+        else ResponseEntity.ok(LeagueView(optionalLeague.get(),
+            optionalLeague.get().teams.map {
+                TeamViewSummaryLeague(
+                    it,
+                    teamRepository.pinsFor(id),
+                    teamRepository.pinsAgainst(id),
+                    teamRepository.highHandicapGame(id),
+                    teamRepository.highHandicapSeries(id),
+                    teamRepository.teamPoints(id),
+                    teamRepository.playerPoints(id)
+                )
+            }
+        ))
     }
 
     @PostMapping("/api/league")
-    fun saveLeague(@RequestBody league: League): ResponseEntity<*> {
-        val saved = repo.save(league)
+    fun saveLeague(@RequestBody leagueRest: LeagueRest): ResponseEntity<*> {
+
+        val saved = repo.save(League(name = leagueRest.name ?: return ResponseEntity.badRequest().body("No name")))
         val location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(saved.id).toUri()

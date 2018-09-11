@@ -3,7 +3,6 @@ package com.saskcow.bowling.repository
 import com.saskcow.bowling.BowlingApplication
 import com.saskcow.bowling.domain.League
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,33 +18,31 @@ class LeagueRepositoryTest {
     @Autowired
     private val repo: LeagueRepository? = null
 
-    @Before
-    fun clear() {
-        repo!!.deleteAll()
-    }
-
     @Test
     fun thingsSaved_canBeRetrieved() {
         var bestLeague = League(name = "brian")
         bestLeague = repo!!.save(bestLeague)
         val foundGame = repo.findById(bestLeague.id)
         assertThat(foundGame.get().name).isEqualTo(bestLeague.name)
+        repo.deleteById(bestLeague.id)
     }
 
     @Test
     fun thingsSaved_canBeQueried() {
-        var bestGame = League(name = "Brian")
-        val worstGame = League(name = "Dave")
-        bestGame = repo!!.save(bestGame)
-        repo.save(worstGame)
+        var bestLeague = League(name = "Brian")
+        var worstLeague = League(name = "Dave")
+        bestLeague = repo!!.save(bestLeague)
+        worstLeague = repo.save(worstLeague)
         var foundGame = repo.findByNameContainingIgnoreCase("Brian")
         assertThat(foundGame.size).isOne()
-        assertThat(foundGame[0].name).isEqualTo(bestGame.name)
+        assertThat(foundGame[0].name).isEqualTo(bestLeague.name)
         foundGame = repo.findByNameContainingIgnoreCase("brI")
         assertThat(foundGame.size).isOne()
-        assertThat(foundGame[0].name).isEqualTo(bestGame.name)
+        assertThat(foundGame[0].name).isEqualTo(bestLeague.name)
         foundGame = repo.findByNameContainingIgnoreCase("dev")
         assertThat(foundGame.size).isZero()
+        repo.deleteById(bestLeague.id)
+        repo.deleteById(worstLeague.id)
     }
 
     @Test

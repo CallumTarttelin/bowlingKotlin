@@ -22,7 +22,15 @@ class PlayerController(private val repo: PlayerRepository, private val teamRepos
     fun findById(@PathVariable("id") id: Long): ResponseEntity<PlayerView> {
         val optionalPlayer = repo.findById(id)
         return if (! optionalPlayer.isPresent) ResponseEntity.notFound().build()
-        else ResponseEntity.ok(PlayerView(optionalPlayer.get()))
+        else ResponseEntity.ok(
+            PlayerView(
+                optionalPlayer.get(),
+                repo.highGame(id),
+                repo.lowGame(id),
+                repo.highSeries(id),
+                repo.lowSeries(id)
+            )
+        )
     }
 
     @PostMapping("/api/player")
