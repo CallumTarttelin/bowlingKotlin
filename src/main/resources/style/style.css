@@ -65,16 +65,22 @@ table, th, td {
 
 table, tr {
   width: 100%;
+  table-layout: fixed;
+    white-space: nowrap;
 }
 
 th {
   text-align: left;
 }
 
+table[class~=loser] th {
+  background-color: red;
+}
+
 table[class~=winner] th {
   background: limegreen;
 }
 
-table[class~=loser] th {
-  background-color: red;
+table[class~=tie] th {
+  background-color: yellow;
 }

@@ -2,7 +2,7 @@
 <head lang="en">
     <meta charset="UTF-8"/>
     <title>Bowling</title>
-    <link rel="stylesheet" href="/built/bundle.css"/>
+    <#--<link rel="stylesheet" href="/style/style.css"/>-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.purple-indigo.min.css">

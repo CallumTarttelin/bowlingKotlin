@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 class HomeController {
 
-    @RequestMapping(value = ["/", "league/**", "/add/league", "/player/**", "/league/**", "/game/**"])
+    @RequestMapping(value = ["/", "league/**", "/add", "/player/**", "/league/**", "/game/**", "/team/**"])
     fun index() = "index"
 
     @RequestMapping(value = ["/login"])

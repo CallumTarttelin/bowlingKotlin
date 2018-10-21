@@ -14,5 +14,5 @@ class PlayerView(
     val name: String = player.name
     val team: TeamViewSummary = TeamViewSummary(player.team ?: Team(-42L, "NO TEAM"))
     val games: List<PlayerGameViewSummaryPlayer> = player.games.map(::PlayerGameViewSummaryPlayer)
-    val handicap = player.getHandicap()
+    val handicap = player.handicap
 }

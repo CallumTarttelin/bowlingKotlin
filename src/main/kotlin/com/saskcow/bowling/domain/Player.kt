@@ -17,6 +17,7 @@ data class Player (
     @OneToMany(mappedBy = "player", cascade = [CascadeType.ALL])
     val games: MutableList<PlayerGame> = mutableListOf()
 ) {
+    val handicap get() = this.genHandicap()
     fun init(): Player {
         team?.addPlayer(this)
         return this
@@ -26,17 +27,17 @@ data class Player (
         this.team?.removePlayer(this)
     }
 
-    fun getHandicap(): Int {
-        if (this.games.isEmpty()) return 0
-        val last24 = this.games.filter { it.scores.size >= 3 }.subList(0, 24)
+    private fun genHandicap(): Int {
+        val last24 = this.games.filter { it.scores.size >= 3 }.takeLast(24)
         if (last24.isEmpty()) return 0
         val adgustedAverage = (0.8 * last24.fold(0) { a, b ->
-            a + (b.scores.subList(0, 3).sumBy { it.scratch } / 3)
-        })
+            a + (b.scores.subList(0, 3).fold(0) { c, d -> c + d.scratch } / 3)
+        }) / last24.size
+        val handicap = 200 - adgustedAverage.toInt()
         return when {
-            adgustedAverage < 0 -> 0
-            adgustedAverage > 80 -> 80
-            else -> adgustedAverage.toInt()
+            handicap < 0 -> 0
+            handicap > 80 -> 80
+            else -> handicap
         }
     }
 

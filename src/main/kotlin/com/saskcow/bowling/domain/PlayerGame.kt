@@ -17,7 +17,7 @@ data class PlayerGame(
     val player: Player? = null,
     @OneToMany(mappedBy = "playerGame", cascade = [CascadeType.ALL])
     val scores: MutableList<Score> = mutableListOf(),
-    val handicap: Int = 0
+    var handicap: Int = player?.handicap ?: 0
 ) {
     fun init(): PlayerGame {
         this.player?.addGame(this)

@@ -42,12 +42,12 @@ class LeagueController(private val repo: LeagueRepository, private val teamRepos
             optionalLeague.get().teams.map {
                 TeamViewSummaryLeague(
                     it,
-                    teamRepository.pinsFor(id),
-                    teamRepository.pinsAgainst(id),
-                    teamRepository.highHandicapGame(id),
-                    teamRepository.highHandicapSeries(id),
-                    teamRepository.teamPoints(id),
-                    teamRepository.playerPoints(id)
+                    teamRepository.pinsFor(it.id),
+                    teamRepository.pinsAgainst(it.id),
+                    teamRepository.highHandicapGame(it.id),
+                    teamRepository.highHandicapSeries(it.id),
+                    teamRepository.teamPoints(it.id),
+                    teamRepository.playerPoints(it.id)
                 )
             }
         ))

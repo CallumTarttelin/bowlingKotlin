@@ -182,6 +182,25 @@ class ScoreControllerTest {
     }
 
     @Test
+    fun `Can add a score with no handicap and it will use player handicap`() {
+        whenever(playerGameRepository!!.findById(testData.playerGames[0].id)).thenReturn(Optional.of(testData.playerGames[0]))
+        whenever(repo!!.save(isA<Score>())).thenReturn(testData.scores[0])
+
+        mockMvc!!.perform(
+            MockMvcRequestBuilders.post("/api/score")
+                .content(
+                    """{
+                    |    "playerGameId": ${testData.playerGames[0].id},
+                    |    "scratch": 200
+                    |}""".trimMargin()
+                )
+                .contentType("application/json")
+        )
+            .andExpect(status().isCreated)
+            .andExpect(header().string("location", "$baseUrl/api/game/${testData.playerGames[0].game?.game?.id}"))
+    }
+
+    @Test
     fun `Attempting to delete a nonexistent score returns 404`() {
         mockMvc!!.perform(MockMvcRequestBuilders.delete("/api/score/1"))
             .andExpect(status().isNotFound)

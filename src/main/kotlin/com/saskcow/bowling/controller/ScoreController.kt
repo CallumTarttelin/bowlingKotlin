@@ -29,8 +29,7 @@ class ScoreController(
         val playerGame = optionalPlayerGame.get()
         scratch ?: return ResponseEntity.badRequest().body("No scratch score provided")
         val handicappedForScore = when {
-            handicap == null && handicapped == null -> return ResponseEntity.badRequest()
-                .body("No handicap or handicapped score")
+            handicap == null && handicapped == null -> scratch + playerGame.handicap
             handicap == null -> handicapped
             handicapped == null -> scratch + handicap
             handicap + scratch == handicapped -> handicapped
@@ -45,6 +44,7 @@ class ScoreController(
             .body("playerGame has quite enough scores already")
 
         repo.save(Score(playerGame = playerGame, scratch = scratch, handicapped = handicappedForScore))
+        playerGame.handicap = handicappedForScore - scratch
 
         val location = ServletUriComponentsBuilder
             .fromCurrentRequest()
